@@ -1,29 +1,80 @@
 <!DOCTYPE HTML>
 <html>
 <head> 
-    <meta charset=utf-8>
-    <!-- add libs -->
-    <script language="JavaScript" type="text/javascript" src="//comet-server.com/js/lib/jquery.min.js" ></script>
-    <script src="//comet-server.com/CometServerApi.js" type="text/javascript"></script>
-    <script src="//comet-server.com/cometVideoApi.js" type="text/javascript"></script> 
+        <meta charset=utf-8>
+        <!-- add libs -->
+        <script language="JavaScript" type="text/javascript" src="//comet-server.com/js/lib/jquery.min.js" ></script>
+        <script src="//comet-server.com/CometServerApi.js" type="text/javascript"></script>
+        <script src="//comet-server.com/cometVideoApi.js" type="text/javascript"></script> 
 </head>
 <body>
 
 <style>
- #WebChatFormForm{
-    overflow: auto;
-    max-height: 220px;
-    width: 100%;
- }
+ video{
+    background:#000;
+    float:left;
+    width: 45%;
+    border:1px solid #f00;
+    margin:5px;
+}
+
+hr{
+    clear:both;
+}
+
+.hide{
+    display:none;
+}
+
+.root .showincall{
+    display:none; 
+}
+
+.root .hideincall{
+    display:block; 
+}
+
+.root.incall .showincall{
+    display:block; 
+}
+
+.root.incall .hideincall{
+    display:none; 
+}
+
+.callbtns button{
+    float:left;
+    margin:5px;
+    margin-top:0px;
+    margin-bottom:10px;
+}
+
+#log{
+    color:#000
+}
+
+.status{
+    color:#272;
+    font-weight:bold;
+}
+
+.note{
+    background:#eee;
+    padding:1px 10px;
+    margin:5px;
+    border-radius:5px;
+    text-align:justify;
+}
 </style>
 
-<h3>Видео чат</h3>
+<h3>Video chat</h3>
 <div class="note">
-<p>Чтоб проверить работу видео чата зайдите на эту страницу из двух или более браузеров.</p>
-<p>Не забывайте что для видео чата нужно наличие вебкамеры или хотя бы микрофона.</p>
-<p>Если вы открыли видеочат из двух браузеров, но с одного компа то может случится что только в одном браузере будет доступ к видеопотоку с камеры, а второй браузер либо выдаст ошибку (Если это FireFox) или будет транслировать чёрный квадрат (Если это chrome)</p>
-<p>Если в конференции более 2 человек то показан будет говорящий, а не все сразу. Но можно и всех участников конференции сразу выводить в види плитки на одном общем изображении.</p>
-<p style="font-weight:bold;">Этот функционал на стадии бетта тестирования, об ошибках сообщайте на <a href="https://github.com/CppComet/comet-server/issues">этой странице</a> или на почту support@comet-server.ru</p>
+<p><a href="https://github.com/CppComet/video-chat-example">Git repository with all code of this example.</a></p>
+<p>To check the operation of the video chat, go to this page from two or more browsers.</p>
+<p>Do not forget that for a video chat you need a webcam or at least a microphone.</p>
+<p>If you have opened a video chat from two browsers, but from one computer it can happen that only one browser will access the video stream from the camera, and the second browser will either give an error (If it's FireFox) or broadcast a black box (If it's a chrome)</p>
+<p>If the conference is more than 2 people, then the speaker will be shown, and not all at once. But it is also possible for all conference participants to immediately display tiles on a common image.</p>
+<p style="font-weight:bold;">This functionality in the beta testing phase, about errors, report at <a href="https://github.com/CppComet/comet-server/issues">this page</a> or to the email support@comet-server.ru</p>
 </div>
 <div class="root">
     <div>
@@ -33,22 +84,21 @@
     </div>
     <hr> 
     <div class="callbtns">
-        <button class="hideincall StartCallBtn" onclick="StartCall()" >Присоединится к конференции</button>
-        <button class="showincall EndCall" onclick="EndCall()">Отключиться</button>
-        <button class="showincall MuteAudio" onclick="MuteAudio()">Отключить/Включить аудио</button>
-        <button class="showincall MuteVideo" onclick="MuteVideo()">Отключить/Включить видео</button>
+        <button class="hideincall StartCallBtn" onclick="StartCall()" >Join to the conference</button>
+        <button class="showincall EndCall" onclick="EndCall()">Hangup</button>
+        <button class="showincall MuteAudio" onclick="MuteAudio()">Mute/UnMute audio</button>
+        <button class="showincall MuteVideo" onclick="MuteVideo()">Mute/UnMute video</button>
     </div>
     <hr> 
     <div class="status">
-        Ожидаем авторизацию на комет сервере
+        We are waiting for authorization on the comet server
     </div>
     <hr> 
     <div id="log"></div>
 </div>
 
 <script type="text/javascript">
-         
-function log()
+ function log()
 {
     console.log(arguments);
     $("#log").append(JSON.stringify(arguments)+"<hr>");
@@ -57,10 +107,10 @@ function log()
 function StartCall()
 { 
     $(".StartCallBtn").hide();
-    $(".status").html("Ожидаем разрешения на звонок");
+    $(".status").html("We are waiting for permission to call");
     roomId = "101";
     log("call", roomId)
-    // Подключаемся к видео чату
+    // Connecting to video chat
     $.ajax({
         url: "https://comet-server.org/doc/CometQL/videochat/call.php?user_id="+cometApi.getUserId()+"&room="+roomId,
         type: "POST", 
@@ -69,7 +119,7 @@ function StartCall()
 
 function EndCall()
 { 
-    // Завершить звонок
+    // End the call
     cometVideoApi.hangup();
 }
 
@@ -84,7 +134,7 @@ function MuteVideo()
     cometVideoApi.muteVideo(!cometVideoApi.isMute().video)
 }
 
-// Авторизация на комет сервере
+// Authorization on comets server
 function auth()
 { 
     var user_id = localStorage['user_id']
@@ -93,140 +143,137 @@ function auth()
         user_id = Math.floor(Math.random()*1000000)
         localStorage['user_id'] = user_id 
     }
-
-    log("Запрос авторизации для user_id="+user_id)
+    
+    log("Request authorization for user_id="+user_id)
     var user_key = "PassForUser"+user_id
-
-    // Подключаемся к видео чату
+    
+    // Connecting to video chat
     return $.when($.ajax({
         url: "https://comet-server.com/doc/CometQL/videochat/auth.php?user_id="+user_id+"&user_key="+user_key,
         type: "GET",
         dataType:'json', 
     })).always(function(res){ 
-        $(".status").html("Ожидаем подключения к комет серверу");
-        cometApi.start({
-            node: "app.comet-server.ru",
-            dev_id: 15,
-            user_id:user_id,
-            user_key:user_key,
-        }) 
-    }).promise();
+            $(".status").html("We are waiting for connection to the comet server");
+            cometApi.start({
+                node: "app.comet-server.ru",
+                dev_id: 15,
+                user_id:user_id,
+                user_key:user_key,
+            }) 
+        }).promise();
 }
  
 
 cometApi.onAuthSuccess(function()
 {
-    // Иницируем звонок после успешной авторизации на комет сервере. 
-    $(".StartCallBtn").removeClass("hide");
-    log("Авторизация на комет сервере выполнена")
-    $(".status").html("Авторизация на комет сервере выполнена");
+        // We will initialize the call after successful authorization on the comet server.
+        $(".StartCallBtn").removeClass("hide");
+        log("Authorization on the comet server is complete")
+     $(".status").html("Authorization on the comet server is complete");
 })
-
-// Авторизация
+ 
 auth();
  
-// Иницируем активацию cometVideoApi
-cometVideoApi.start({
-
-    // Колбек вызываемый перед началом подключения для звонка
-    // Предполагается что в нём будут заданы настройки для близжайшего звонка
-    // Такие как и параметры audio_remote, video_local, video_remote и возможно ещё какието.
-    // А потом будет вызвана функция cometVideoApi.acceptCall(event)
-    // А если не будет вызвана то значит мы не взяли трубку.
+// We initiate the activation of cometVideoApi
+cometVideoApi.start({ 
+    // Callback called before starting the connection for the call
+    // It is assumed that it will set the settings for the next call
+    // Such as the parameters audio_remote, video_local, video_remote and maybe even some more.
+    // And then the cometVideoApi.acceptCall (event) function will be called
+    // And if it's not called, then we did not pick up the phone.
     onCall:function(callEvent)
     {
-        $(".status").html("Входящий звонок, нажмите ответить.");
-        if(!confirm("Ответить на вызов?"))
+        $(".status").html("Incoming call, press answer.");
+        if(!confirm("Answer a call?"))
         {
-            // Решили не отвечать на звонок
-            $(".status").html("Решили не отвечать на звонок.");
+            // We decided not to answer the call
+            $(".status").html("We decided not to answer the call");
             $(".StartCallBtn").show();
             return
         }
 
-        // Берём трубку если хотим
+        // Receive call
         cometVideoApi.acceptCall({
-            // Тип звонка 'audio' | 'video'
+            // Type of call 'audio' | 'video'
             type:'video',
 
-            // Указываем целевой элемент для видео потока от собеседника
+            // Specify the target element for the video stream from the interlocutor
             video_remote: $("#video_remote")[0],
 
-            // Указываем целевой элемент для аудио потока от собеседника
+            // Specify the target element for the audio stream from the interlocutor
             audio_remote: $("#audio_remote")[0],
 
-            // Указываем целевой элемент для видео потока от меня (моё собственное изображение из камеры)
+            // Specify the target element for the video stream from me (my own image from the camera)
             video_local: $("#video_local")[0],
         })
-        $(".status").html("Ожидаем ответа от других участников конференции");
+        $(".status").html("We look forward to hearing from other conference participants");
     },
-  
-    /**
-     * Колбек завершения звонка
-     * @param {object} event
-     * {
-     * action:"",       // Имя события
-     * status:"",       // Статус причины завершения звонка
-     * callInfo:{},     // Информация о звонке
-     * time:1000        // Время длительность звонка
-     * type:"audio"          // Тип вызова
-     * }
-     */
+    
+            /**
+              * Callback end of call
+              * @param {object} event
+              * {
+              * Action: "",         // Event name
+              * Status: "",         // Call completion reason
+              * CallInfo: {},     // Information about the call
+              * Time: 1000            // Time duration of the call
+              * Type: "audio"     // Type of call
+              * }
+              */
     onCallEnd:function(event)
     {
         $(".root").removeClass("incall")
         $(".StartCallBtn").show();
-        $(".status").html("Вызов завершён");
+        $(".status").html("Call ended");
         log("onCallEnd", event)
     },
-  
-    /**
-     * Колбек поднятия трубки собеседником
-     * @param {object} event
-     * {
-     * action:"accept",       // Имя события
-     * callInfo:{},           // Информация о звонке
-     * type:"audio"           // Тип вызова который выбран собеседником
-     * }
-     *
-     * Колбек вызывается только один раз для первого ответившего собеседника
-     *
-     */
+    
+            /**
+              * Callback picking up the interlocutor
+              * @param {object} event
+              * {
+              * Action: "accept", // Event name
+              * CallInfo: {},         // Information about the call
+              * Type: "audio"         // The type of call that is selected by the interlocutor
+              * }
+              *
+              * The callback is called only once for the first responding interlocutor
+              *
+              */
     onCallAccept: function(event)
     { 
-        $(".status").html("Получен ответ от другого участника конференции.");
+        $(".status").html("Received a response from another participant in the conference.");
         log("onAccept", event)
     },
-  
-    /**
-     * Колбек когда я и мой собеседник подключились к серверу
-     * @param {object} event
-     * {
-     * action:"start",       // Имя события
-     * callInfo:{},          // Информация о звонке
-     * type:"audio"          // Тип вызова
-     * }
-     */
+    
+            /**
+              * Callback when I and my interlocutor are connected to the server
+              * @param {object} event
+              * {
+              * Action: "start",    // Event name
+              * CallInfo: {},         // Information about the call
+              * Type: "audio"         // Type of call
+              *}
+              */
     onCallStart: function(event)
     {
-        $(".status").html("Подключение к медиасерверу выполнено. Разговор начался.");
+        $(".status").html("Connection to the media server is complete. The conversation began.");
         $(".root").addClass("incall")
         log("onCallStart", event)
     },
     onOut: function(event)
     {
-        // Выход участника из конференции
-        $(".status").html("Один из собеседников покинул конференцию");
+        // Participant's exit from the conference
+        $(".status").html("One of the interlocutors left the conference");
         log("onOut", event)
     },
     onIn: function(event)
     {
-        // Вход участника в конференцию
-        $(".status").html("К конференции присоединился ещё один человек.");
+        // Log in to the conference
+        $(".status").html("Another person joined the conference.");
         log("onIn", event)
     },
 })
-    
 </script>
 </body>
 </html>
