@@ -1,3 +1,3 @@
 # Video chat
 
-Online demo [https://codepen.io/Levhav/pen/dRzVZQ](EN) [https://codepen.io/Levhav/pen/MooOzd](RU) 
+Online demo [EN](https://codepen.io/Levhav/pen/dRzVZQ) [RU](https://codepen.io/Levhav/pen/MooOzd) 
