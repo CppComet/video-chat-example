@@ -112,7 +112,7 @@ function StartCall()
     log("call", roomId)
     // Connecting to video chat
     $.ajax({
-        url: "https://comet-server.org/doc/CometQL/videochat/call.php?user_id="+cometApi.getUserId()+"&room="+roomId,
+        url: "https://comet-server.com/doc/CometQL/videochat/call.php?user_id="+cometApi.getUserId()+"&room="+roomId,
         type: "POST", 
     });
 }
