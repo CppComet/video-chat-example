@@ -1,4 +1,4 @@
-<?php 
+<?php
 // More info about CppComet http://comet-server.org/doku.php/en
 // More info about CometQL http://comet-server.org/doku.php/en:comet:cometql
 // More info about auth in CppComet http://comet-server.org/doku.php/en:comet:authentication
@@ -11,21 +11,21 @@ header("Access-Control-Allow-Origin: *");
 // CometQL_v1 database
 $link = mysqli_connect("app.comet-server.ru", "15", "lPXBFPqNg3f661JcegBY0N0dPXqUBdHXqj2cHf04PZgLHxT6z55e20ozojvMRvB8", "CometQL_v1");
 
-$user_id = $_GET['user_id']; 
+$user_id = (int)$_GET['user_id']; 
 $room = $_GET['room']; 
 
 // In the example, for simplicity, we pass $user_id
 $caller_id = $user_id;
 
 $message = "{}";
-$mode = 'video';
+$profile = 'video';
 
-$query = "INSERT INTO conference (name, user_id, caller_id, message, mode)VALUES('"
+$query = "INSERT INTO conference (name, user_id, caller_id, message, profile)VALUES('"
                 .mysqli_real_escape_string($link, $room)."', '"
                 .mysqli_real_escape_string($link, $user_id)."', '"
                 .mysqli_real_escape_string($link, $caller_id)."', '"
                 .mysqli_real_escape_string($link, $message)."', '"
-                .mysqli_real_escape_string($link, $mode)."' );";
+                .mysqli_real_escape_string($link, $profile)."' );";
 
 // Отправляем сообщение в канал
 mysqli_query (  $link, $query);
